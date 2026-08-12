@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [ApiController::class, 'login']);
 //
-Route::post('my-tickets', [ApiController::class, 'myTickets']);
+Route::get('my-tickets', [ApiController::class, 'myTickets']);
 
 Route::middleware('auth:api')->group(function () {
 	Route::post('update-device-token', [ApiController::class, 'updateDeviceToken']);
