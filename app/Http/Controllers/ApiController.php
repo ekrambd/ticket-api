@@ -342,6 +342,21 @@ class ApiController extends Controller
                 ->where('id', $booking->id)
                 ->first();
 
+            // if (!$data) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Ticket not found'
+            //     ], 404);
+            // }
+
+            $decoded = json_decode($booking->data, true);
+
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+
+            $booking->data = $decoded;
+
             return response()->json([
                 'status' => true,
                 'message' => 'Successfully Updated',
