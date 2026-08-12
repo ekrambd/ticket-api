@@ -122,15 +122,25 @@ class ApiController extends Controller
 
     public function ticketLogs(Request $request)
     {
-        try
-        {
-            $data = $data = DB::connection('mysql_second')
-                                ->table('booking_histories')
-                                ->get();
+        try {
+            $data = DB::connection('mysql_second')
+                ->table('booking_histories')
+                ->get();
+
+            $data->transform(function ($item) {
+                $item->data = json_decode($item->data, true);
+
+                return $item;
+            });
 
             return response()->json($data);
-        }catch(\Exception $e){
-            return response()->json(['status'=>false, 'code'=>$e->getCode(), 'message'=>$e->getMessage()],500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
