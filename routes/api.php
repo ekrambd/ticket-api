@@ -14,23 +14,22 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['throttle:60,1'])->group(function () {
 
-Route::post('login', [ApiController::class, 'login']);
-//
-Route::get('my-tickets', [ApiController::class, 'myTickets']);
+	Route::post('login', [ApiController::class, 'login']);
+	//
+	Route::get('my-tickets', [ApiController::class, 'myTickets']);
 
-Route::post('send-fcm-push', [ApiController::class, 'sendFCMPush']);
+	Route::post('send-fcm-push', [ApiController::class, 'sendFCMPush']);
 
-Route::get('/ticket-details/{id}', [ApiController::class, 'ticketDetails']);
+	Route::get('/ticket-details/{id}', [ApiController::class, 'ticketDetails']);
 
-Route::middleware('auth:api')->group(function () {
-	Route::post('update-device-token', [ApiController::class, 'updateDeviceToken']);
-	Route::get('/ticket-logs', [ApiController::class, 'ticketLogs']);
-	
-	Route::post('edit-ticket', [ApiController::class, 'editTicket']);
-	Route::get('/me', [ApiController::class, 'me']);
-	Route::post('/logout', [ApiController::class, 'logout']);
+	Route::middleware('auth:api')->group(function () {
+		Route::post('update-device-token', [ApiController::class, 'updateDeviceToken']);
+		Route::get('/ticket-logs', [ApiController::class, 'ticketLogs']);
+		
+		Route::post('edit-ticket', [ApiController::class, 'editTicket']);
+		Route::get('/me', [ApiController::class, 'me']);
+		Route::post('/logout', [ApiController::class, 'logout']);
+	});
 });
