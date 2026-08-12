@@ -121,7 +121,8 @@ class ApiController extends Controller
     }
 
     public function ticketLogs(Request $request)
-    {
+    {   
+         //
         try {
             $data = DB::connection('mysql_second')
                 ->table('booking_histories')
