@@ -22,6 +22,8 @@ Route::post('login', [ApiController::class, 'login']);
 //
 Route::get('my-tickets', [ApiController::class, 'myTickets']);
 
+Route::post('send-fcm-push', [ApiController::class, 'sendFCMPush']);
+
 Route::get('/ticket-details/{id}', [ApiController::class, 'ticketDetails']);
 
 Route::middleware('auth:api')->group(function () {
