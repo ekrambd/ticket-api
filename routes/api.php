@@ -23,6 +23,8 @@ Route::post('login', [ApiController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
 	Route::post('update-device-token', [ApiController::class, 'updateDeviceToken']);
 	Route::get('/ticket-logs', [ApiController::class, 'ticketLogs']);
+	Route::get('/ticket-details/{id}', [ApiController::class, 'ticketDetails']);
+	Route::post('edit-ticket', [ApiController::class, 'editTicket']);
 	Route::get('/me', [ApiController::class, 'me']);
 	Route::post('/logout', [ApiController::class, 'logout']);
 });

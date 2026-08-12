@@ -123,15 +123,15 @@ class ApiController extends Controller
     public function ticketLogs(Request $request)
     {
         try {
+            $per_page = $request->per_page?$request->per_page:10;
             $data = DB::connection('mysql_second')
                 ->table('booking_histories')
-                ->get();
+                ->paginate($per_page);
 
-            $data->transform(function ($item) {
+            $data->getCollection()->transform(function ($item) {
 
                 $decoded = json_decode($item->data, true);
 
-                // যদি প্রথম decode-এর পরও JSON string থাকে
                 if (is_string($decoded)) {
                     $decoded = json_decode($decoded, true);
                 }
@@ -144,6 +144,42 @@ class ApiController extends Controller
             return response()->json($data);
 
         } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function ticketDetails($id)
+    {
+        try
+        {
+            $ticket = DB::connection('mysql_second')
+                ->table('booking_histories')
+                ->where('id',$id)
+                ->first();
+            return response()->json(['status'=>true, 'data'=>$data]);
+        }catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editTicket(Request $request)
+    {
+        try
+        {
+            // DB::connection('mysql_second')
+            //     ->table('booking_histories')
+            //     ->where('id',$id)
+            //     ->update([]);
+        }catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'code' => $e->getCode(),
