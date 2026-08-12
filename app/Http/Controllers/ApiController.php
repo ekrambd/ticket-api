@@ -228,7 +228,7 @@ class ApiController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'booking_id' => 'required|integer',
-                'status' => 'nullable|in:pending:booked',
+                'status' => 'nullable|in:pending,booked',
             ]);
 
             if ($validator->fails()) {
