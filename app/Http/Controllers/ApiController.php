@@ -126,6 +126,7 @@ class ApiController extends Controller
             $per_page = $request->per_page?$request->per_page:10;
             $data = DB::connection('mysql_second')
                 ->table('booking_histories')
+                ->orderBy('id','DESC')
                 ->paginate($per_page);
 
             $data->getCollection()->transform(function ($item) {
@@ -179,6 +180,51 @@ class ApiController extends Controller
             //     ->table('booking_histories')
             //     ->where('id',$id)
             //     ->update([]);
+
+            $booking = DB::connection('mysql_second')
+                ->table('booking_histories')
+                ->where('id', $id)
+                ->first();
+
+            if (!$booking) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Booking not found',
+                    'data' => new \stdClass()
+                ], 404);
+            }
+
+            $data = json_decode($booking->data, true);
+
+            if (is_string($data)) {
+                $data = json_decode($data, true);
+            }
+
+            $data['onward']['seat_no'] = $request->seat_no;
+
+
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+            DB::connection('mysql_second')
+                ->table('booking_histories')
+                ->where('id', $id)
+                ->update([
+                    'data' => $data
+                ]);
+
+            $booking = DB::connection('mysql_second')
+                ->table('booking_histories')
+                ->where('id', $id)
+                ->refresh();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Seat updated successfully',
+                'data' => $booking
+            ]);
+
         }catch (\Exception $e) {
             return response()->json([
                 'status' => false,
