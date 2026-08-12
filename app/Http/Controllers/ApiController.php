@@ -121,15 +121,22 @@ class ApiController extends Controller
     }
 
     public function ticketLogs(Request $request)
-    {   
-         //
+    {
         try {
             $data = DB::connection('mysql_second')
                 ->table('booking_histories')
                 ->get();
 
             $data->transform(function ($item) {
-                $item->data = json_decode($item->data, true);
+
+                $decoded = json_decode($item->data, true);
+
+                // যদি প্রথম decode-এর পরও JSON string থাকে
+                if (is_string($decoded)) {
+                    $decoded = json_decode($decoded, true);
+                }
+
+                $item->data = $decoded;
 
                 return $item;
             });
