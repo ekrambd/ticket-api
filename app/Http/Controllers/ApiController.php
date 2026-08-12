@@ -158,11 +158,23 @@ class ApiController extends Controller
     {
         try
         {
-            $ticket = DB::connection('mysql_second')
+            $data = DB::connection('mysql_second')
                 ->table('booking_histories')
                 ->where('id',$id)
                 ->first();
-            return response()->json(['status'=>true, 'data'=>$ticket]);
+            $data->getCollection()->transform(function ($item) {
+
+                $decoded = json_decode($item->data, true);
+
+                if (is_string($decoded)) {
+                    $decoded = json_decode($decoded, true);
+                }
+
+                $item->data = $decoded;
+
+                return $item;
+            });
+            return response()->json(['status'=>true, 'data'=>$data]);
         }catch (\Exception $e) {
             return response()->json([
                 'status' => false,
