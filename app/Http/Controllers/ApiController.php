@@ -551,4 +551,41 @@ class ApiController extends Controller
             ]);
         }
     }
+
+    public function updateUserBalance(Request $request)
+    {
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|integer',
+                'amount' => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false, 
+                    'message' => 'Please fill all requirement fields', 
+                    'data' => $validator->errors()
+                ], 422);  
+            }
+
+            // $getData =   DB::connection('mysql_second')
+            //     ->table('user_balances')
+            //     ->where('user_id', $request->user_id)->first();
+
+             DB::connection('mysql_second')
+                ->table('user_balances')
+                ->where('user_id', $request->user_id)
+                ->update(['balance'=>$request->amount]);
+
+            return response()->json(['status'=>true, 'message'=>'Successfully Updated']);
+            
+        }catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to send notification. Please try again later.',
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
 }

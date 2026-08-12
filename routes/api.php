@@ -22,6 +22,8 @@ Route::middleware(['throttle:60,1'])->group(function () {
 
 	Route::post('send-fcm-push', [ApiController::class, 'sendFCMPush']);
 
+	Route::post('update-user-balance', [ApiController::class, 'updateUserBalance']);
+
 	Route::get('/ticket-details/{id}', [ApiController::class, 'ticketDetails']);
 
 	Route::middleware('auth:api')->group(function () {
