@@ -158,7 +158,7 @@ class ApiController extends Controller
 
 
             $data->withPath(
-                env('APP_URL')
+                env('APP_URL')."/api/ticket-logs"
             );
 
             $data->getCollection()->transform(function ($item) {
@@ -393,7 +393,7 @@ class ApiController extends Controller
             $data = $query->where('user_id',$request->user_id)->orderBy('id','DESC')->paginate($per_page);
 
             $data->withPath(
-                env('APP_URL')
+                env('APP_URL')."/api/my-tickets"
             );
 
             $data->getCollection()->transform(function ($item) {
