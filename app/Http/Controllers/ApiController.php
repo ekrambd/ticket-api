@@ -308,7 +308,7 @@ class ApiController extends Controller
 
                 $file = $request->file('ticket_file');
 
-                $name = time() . '_' . user()->id . '_' . $file->getClientOriginalName();
+                $name = time() . '_' . $booking->id . '_' . $file->getClientOriginalName();
 
                 $file->move(
                     public_path('uploads/tickets'),
