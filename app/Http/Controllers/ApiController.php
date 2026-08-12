@@ -7,6 +7,7 @@ use Auth;
 use Validator;
 use DB;
 use App\Models\User;
+use Firebase\JWT\JWT;
 
 class ApiController extends Controller
 {
