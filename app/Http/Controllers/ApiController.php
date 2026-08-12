@@ -156,6 +156,11 @@ class ApiController extends Controller
             }
             $data = $query->orderBy('id','DESC')->paginate($per_page);
 
+
+            $data->withPath(
+                env('APP_URL')
+            );
+
             $data->getCollection()->transform(function ($item) {
 
                 $decoded = json_decode($item->data, true);
@@ -386,6 +391,10 @@ class ApiController extends Controller
                 $query->whereDate('created_at','<=',$request->to_date);
             }
             $data = $query->where('user_id',$request->user_id)->orderBy('id','DESC')->paginate($per_page);
+
+            $data->withPath(
+                env('APP_URL')
+            );
 
             $data->getCollection()->transform(function ($item) {
 
