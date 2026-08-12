@@ -326,7 +326,7 @@ class ApiController extends Controller
 
             DB::connection('mysql_second')
                 ->table('booking_histories')
-                ->where('id', $id)
+                ->where('id', $booking->id)
                 ->update($updateData);
 
             /*
@@ -337,7 +337,7 @@ class ApiController extends Controller
 
             $booking = DB::connection('mysql_second')
                 ->table('booking_histories')
-                ->where('id', $id)
+                ->where('id', $booking->id)
                 ->first();
 
             return response()->json([
