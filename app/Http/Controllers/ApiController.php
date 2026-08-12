@@ -498,7 +498,7 @@ class ApiController extends Controller
             // Build payload
             $payload = [
                 'message' => [
-                    'token' => $request->device_token,
+                    'token' => $user->device_token,
                     'notification' => [
                         'title' => "A New Booking Request",
                         'body' => "A New Booking Request, Please & Review the Booking Request",
