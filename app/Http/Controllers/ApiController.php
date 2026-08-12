@@ -161,7 +161,7 @@ class ApiController extends Controller
                 ->table('booking_histories')
                 ->where('id',$id)
                 ->first();
-            return response()->json(['status'=>true, 'data'=>$data]);
+            return response()->json(['status'=>true, 'data'=>$ticket]);
         }catch (\Exception $e) {
             return response()->json([
                 'status' => false,
