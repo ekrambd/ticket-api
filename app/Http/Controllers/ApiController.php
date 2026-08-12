@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use DB;
+use App\Models\User;
 
 class ApiController extends Controller
 {
@@ -428,5 +429,110 @@ class ApiController extends Controller
             'token' => auth('api')->refresh(),
             'token_type' => 'bearer',
         ]);
+    }
+
+    public function sendFCMPush(Request $request)
+    {
+        try {  
+
+            // $validator = Validator::make($request->all(), [
+            //     'device_token' => 'required',
+            //     'title' => 'required|string',
+            //     'body' => 'required',
+            // ]);
+
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'The given data was invalid',
+            //         'errors' => $validator->errors(),
+            //     ], 422);
+            // }
+
+
+           $user = User::find(1);
+
+           $device_token = $user->device_token;
+
+           $serviceAccount = json_decode(file_get_contents(public_path('fcm/bangla-one-service-ltd-firebase-adminsdk-fbsvc-f6202308b2.json')), true);
+
+            // Generate JWT
+            $now = time();
+            $jwt = JWT::encode([
+                'iss' => $serviceAccount['client_email'],
+                'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+                'aud' => 'https://oauth2.googleapis.com/token',
+                'iat' => $now,
+                'exp' => $now + 3600
+            ], $serviceAccount['private_key'], 'RS256');
+
+            // Exchange JWT for access token
+            $ch = curl_init('https://oauth2.googleapis.com/token');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion' => $jwt
+            ]));
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $data = json_decode($response, true);
+            if (!isset($data['access_token'])) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Failed to get access token',
+                    'error' => $response
+                ], 500);
+            }
+
+            $accessToken = $data['access_token'];
+
+            //return $accessToken;
+
+            // FCM endpoint
+            $fcmUrl = 'https://fcm.googleapis.com/v1/projects/' . $serviceAccount['project_id'] . '/messages:send';
+
+            // Build payload
+            $payload = [
+                'message' => [
+                    'token' => $request->device_token,
+                    'notification' => [
+                        'title' => "A New Booking Request",
+                        'body' => "A New Booking Request, Please & Review the Booking Request",
+                    ],
+                    //'data' => $request->extra_data ?? []
+                ]
+            ];
+
+            // Send notification
+            $ch = curl_init($fcmUrl);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $accessToken,
+                'Content-Type: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+
+            $fcmResponse = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            return response()->json([
+                'status' => $httpCode === 200,
+                'message' => $httpCode === 200 ? 'Notification sent successfully' : 'Failed to send notification',
+                'data' => json_decode($fcmResponse, true)
+            ]);
+
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to send notification. Please try again later.',
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 }
