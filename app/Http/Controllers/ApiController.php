@@ -222,11 +222,12 @@ class ApiController extends Controller
         }
     }
 
-    public function editTicket(Request $request, $id)
+    public function editTicket(Request $request)
     {
         try {
 
             $validator = Validator::make($request->all(), [
+                'booking_id' => 'required|integer|exists:booking_histories,id',
                 'status' => 'nullable|in:pending:booked',
             ]);
 
@@ -240,7 +241,7 @@ class ApiController extends Controller
 
             $booking = DB::connection('mysql_second')
                 ->table('booking_histories')
-                ->where('id', $id)
+                ->where('id', $request->booking_id)
                 ->first();
 
             if (!$booking) {
