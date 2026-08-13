@@ -1,0 +1,90 @@
+CREATE DATABASE ticket;
+
+CREATE USER 'ticket'@'localhost'
+IDENTIFIED BY 'Ekrambd28!';
+
+GRANT ALL PRIVILEGES
+ON ticket.*
+TO 'ticket'@'localhost';
+
+FLUSH PRIVILEGES;
+
+EXIT;
+
+
+ssh root@31.97.231.185
+Ekrambd28&50
+
+sudo cat /etc/nginx/sites-available/default
+
+
+
+CREATE USER 'bd_tickets'@'31.97.231.185' IDENTIFIED BY 'Ekrambd28!';
+
+GRANT ALL PRIVILEGES ON bd_tickets.* TO 'bd_tickets'@'31.97.231.185';
+
+FLUSH PRIVILEGES;
+
+
+200.141.7.49
+
+YourSecurePassword123!
+
+SHOW GRANTS FOR 'bd_tickets'@'31.97.231.185';
+
+
+# Second Database
+DB_SECOND_CONNECTION=mysql_second
+DB_SECOND_HOST=200.141.7.49
+DB_SECOND_PORT=3306
+DB_SECOND_DATABASE=bd_tickets
+DB_SECOND_USERNAME=bd_tickets
+DB_SECOND_PASSWORD=YourSecurePassword123!
+
+
+CREATE USER 'bd_tickets'@'31.97.231.185'
+IDENTIFIED BY 'YourSecurePassword123!';
+
+GRANT ALL PRIVILEGES ON bd_tickets.*
+TO 'bd_tickets'@'31.97.231.185';
+
+FLUSH PRIVILEGES;
+
+
+
+CREATE USER 'ticket_api'@'srv951333.hstgr.cloud'
+IDENTIFIED BY 'YourSecurePassword123!';
+
+GRANT ALL PRIVILEGES ON bd_tickets.*
+TO 'ticket_api'@'srv951333.hstgr.cloud';
+
+FLUSH PRIVILEGES;
+
+
+DB_SECOND_HOST=200.141.7.49
+DB_SECOND_PORT=3306
+DB_SECOND_DATABASE=bd_tickets
+DB_SECOND_USERNAME=ticket_api
+DB_SECOND_PASSWORD=YourSecurePassword123!
+
+
+
+sudo nano /etc/nginx/sites-available/default
+
+
+sudo cat /etc/nginx/sites-available/default
+
+
+sudo nginx -t && sudo systemctl reload nginx
+
+
+
+
+CREATE USER 'union_app'@'31.97.231.185'
+IDENTIFIED BY 'Ekrambd28!';
+
+
+GRANT ALL PRIVILEGES ON union_defi.*
+TO 'union_app'@'31.97.231.185';
+
+FLUSH PRIVILEGES;
