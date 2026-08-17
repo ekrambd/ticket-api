@@ -231,6 +231,8 @@ class ApiController extends Controller
             $validator = Validator::make($request->all(), [
                 'booking_id' => 'required|integer',
                 'status' => 'nullable|in:pending,booked',
+                'user_name' => 'required|string',
+                'password' => 'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -297,6 +299,30 @@ class ApiController extends Controller
             */
 
             if ($request->has('status')) {
+                if($booking->status == 'booked')
+                {
+                    return response()->json(['status'=>false, 'message'=>'Already booked the ticket by admin', 'data'=>new \stdClass()]);
+                }
+                if($request->status == 'booked')
+                {
+                    $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                      CURLOPT_URL => 'https://banglaone.services/api/service-balance-deduct.php',
+                      CURLOPT_RETURNTRANSFER => true,
+                      CURLOPT_ENCODING => '',
+                      CURLOPT_MAXREDIRS => 10,
+                      CURLOPT_TIMEOUT => 0,
+                      CURLOPT_FOLLOWLOCATION => true,
+                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                      CURLOPT_CUSTOMREQUEST => 'POST',
+                      CURLOPT_POSTFIELDS => array('user_name' => $request->user_name,'password' => $request->password,'amount' => $booking->grand_total,'service_name' => 'bus ticket'),
+                    ));
+
+                    $response = curl_exec($curl);
+
+                    curl_close($curl);
+                }    
                 $updateData['status'] = $request->status;
             }
 
