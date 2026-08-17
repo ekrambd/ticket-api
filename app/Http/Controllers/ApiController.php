@@ -231,8 +231,8 @@ class ApiController extends Controller
             $validator = Validator::make($request->all(), [
                 'booking_id' => 'required|integer',
                 'status' => 'nullable|in:pending,booked',
-                'user_name' => 'required|string',
-                'password' => 'required|string',
+                // 'user_name' => 'required|string',
+                // 'password' => 'required|string',
             ]);
 
             if ($validator->fails()) {
@@ -316,7 +316,7 @@ class ApiController extends Controller
                       CURLOPT_FOLLOWLOCATION => true,
                       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                       CURLOPT_CUSTOMREQUEST => 'POST',
-                      CURLOPT_POSTFIELDS => array('user_name' => $request->user_name,'password' => $request->password,'amount' => $booking->grand_total,'service_name' => 'bus ticket'),
+                      CURLOPT_POSTFIELDS => array('user_id' => $booking->user_id,'amount' => $booking->grand_total,'service_name' => 'bus ticket'),
                     ));
 
                     $response = curl_exec($curl);
