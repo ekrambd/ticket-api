@@ -299,10 +299,10 @@ class ApiController extends Controller
             */
 
             if ($request->has('status')) {
-                if($booking->status == 'booked')
-                {
-                    return response()->json(['status'=>false, 'message'=>'Already booked the ticket by admin', 'data'=>new \stdClass()]);
-                }
+                // if($booking->status == 'booked')
+                // {
+                //     return response()->json(['status'=>false, 'message'=>'Already booked the ticket by admin', 'data'=>new \stdClass()],400);
+                // }
                 if($request->status == 'booked')
                 {
                     $curl = curl_init();
