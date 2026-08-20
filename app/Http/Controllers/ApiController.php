@@ -158,7 +158,7 @@ class ApiController extends Controller
             }
             if($request->has('company_name'))
             {
-                $query->where('company_name',$request->company_name)
+                $query->where('company_name',$request->company_name);
             }    
             $data = $query->orderBy('id','DESC')->paginate($per_page);
 
