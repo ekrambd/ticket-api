@@ -307,27 +307,31 @@ class ApiController extends Controller
                 {
                     return response()->json(['status'=>false, 'message'=>'Already booked the ticket by admin', 'data'=>new \stdClass()],400);
                 }
-                if($request->status == 'booked')
+                if($booking->company_name == 'bangla_one')
                 {
-                    $curl = curl_init();
+                    if($request->status == 'booked')
+                    {
+                        $curl = curl_init();
 
-                    curl_setopt_array($curl, array(
-                      CURLOPT_URL => 'https://banglaone.services/api/service-balance-deduct.php',
-                      CURLOPT_RETURNTRANSFER => true,
-                      CURLOPT_ENCODING => '',
-                      CURLOPT_MAXREDIRS => 10,
-                      CURLOPT_TIMEOUT => 0,
-                      CURLOPT_FOLLOWLOCATION => true,
-                      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                      CURLOPT_CUSTOMREQUEST => 'POST',
-                      CURLOPT_POSTFIELDS => array('user_id' => $request->user_name,'password' => $request->password,'amount' => $booking->grand_total,'service_name' => 'bus ticket'),
-                    ));
+                        curl_setopt_array($curl, array(
+                          CURLOPT_URL => 'https://banglaone.services/api/service-balance-deduct.php',
+                          CURLOPT_RETURNTRANSFER => true,
+                          CURLOPT_ENCODING => '',
+                          CURLOPT_MAXREDIRS => 10,
+                          CURLOPT_TIMEOUT => 0,
+                          CURLOPT_FOLLOWLOCATION => true,
+                          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                          CURLOPT_CUSTOMREQUEST => 'POST',
+                          CURLOPT_POSTFIELDS => array('user_id' => $request->user_name,'password' => $request->password,'amount' => $booking->grand_total,'service_name' => 'bus ticket'),
+                        ));
 
-                    $response = curl_exec($curl);
+                        $response = curl_exec($curl);
 
-                    curl_close($curl);
+                        curl_close($curl);
+                    }    
+                    $updateData['status'] = $request->status;
                 }    
-                $updateData['status'] = $request->status;
+                
             }
 
             /*
